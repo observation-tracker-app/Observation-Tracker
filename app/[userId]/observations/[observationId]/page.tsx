@@ -65,11 +65,11 @@ export default function ObservationDetailPage({
 try {
   result = await response.json();
 } catch {
-  throw new Error('Something went wrong. Please try again');
+  throw new Error('File size must be less than 5MB. Please try again with a smaller file or no file.');
 }
 
 if (!response.ok) {
-  throw new Error(result.error || 'Failed to create observation');
+  throw new Error(result.error || 'Failed to revise observation');
 }
 
       setMessage('Revision submitted successfully!');

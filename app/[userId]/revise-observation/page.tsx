@@ -40,7 +40,7 @@ export default function ReviseObservationPage({ params }: { params: { userId: st
 try {
   result = await response.json();
 } catch {
-  throw new Error('Something went wrong. Please try again');
+  throw new Error('File size must be less than 5MB. Please try again with a smaller file or no file.');
 }
 
 if (!response.ok) {
