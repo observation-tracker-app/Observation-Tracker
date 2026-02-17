@@ -29,6 +29,14 @@ export async function POST(request: NextRequest) {
     const observation = formData.get('observation') as string;
     const photoFile = formData.get('photo') as File | null;
 
+// Validate photo size
+if (photoFile && photoFile.size > 5 * 1024 * 1024) {
+  return NextResponse.json(
+    { error: 'Photo size must be less than 5MB' },
+    { status: 400 }
+  );
+}
+
    // Get user-provided recipients
 let recipientUserIds = JSON.parse(recipientsJson).map((id: string) => id.toUpperCase());
 

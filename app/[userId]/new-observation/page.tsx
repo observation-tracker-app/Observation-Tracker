@@ -176,7 +176,7 @@ export default function NewObservationPage({ params }: { params: { userId: strin
                   accept="image/*"
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none"
                   onChange={(e) => setPhoto(e.target.files?.[0] || null)}
-                />
+                  />
               </div>
 
               {/* Submit Button */}

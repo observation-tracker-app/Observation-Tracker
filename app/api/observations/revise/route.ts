@@ -25,6 +25,14 @@ export async function POST(request: NextRequest) {
     const revisedObservation = formData.get('revisedObservation') as string;
     const photoFile = formData.get('photo') as File | null;
 
+// Validate photo size
+if (photoFile && photoFile.size > 5 * 1024 * 1024) {
+  return NextResponse.json(
+    { error: 'Photo size must be less than 5MB' },
+    { status: 400 }
+  );
+}
+
     // Find the observation
     const observation = await prisma.observation.findUnique({
       where: { observationId },
