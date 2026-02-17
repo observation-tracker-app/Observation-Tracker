@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String              @id @default(cuid())
+  userId            String              @unique // 6-digit alphanumeric code (uppercase)
+  name              String
+  email             String              @unique
+  password          String
+  profilePhoto      String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  observations      Observation[]       @relation("SenderObservations")
+  receivedObservations ObservationRecipient[]
+  revisions         Revision[]
+  personalNotebook  PersonalNotebook[]
+}
+
+model Observation {
+  id                String              @id @default(cuid())
+  observationId     String              @unique // 6-digit issue ID
+  senderId          String
+  sender            User                @relation("SenderObservations", fields: [senderId], references: [id])
+  location          String
+  observation       String
+  photoPath         String?
+  status            String              @default("unrevised") // "unrevised" or "revised"
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  recipients        ObservationRecipient[]
+  revisions         Revision[]
+}
+
+model ObservationRecipient {
+  id              String       @id @default(cuid())
+  observationId   String
+  observation     Observation  @relation(fields: [observationId], references: [id], onDelete: Cascade)
+  recipientId     String
+  recipient       User         @relation(fields: [recipientId], references: [id])
+  createdAt       DateTime     @default(now())
+
+  @@unique([observationId, recipientId])
+}
+
+model Revision {
+  id                String       @id @default(cuid())
+  observationId     String
+  observation       Observation  @relation(fields: [observationId], references: [id], onDelete: Cascade)
+  reviserId         String
+  reviser           User         @relation(fields: [reviserId], references: [id])
+  revisedLocation   String
+  revisedObservation String
+  revisedPhotoPath  String?
+  createdAt         DateTime     @default(now())
+}
+
+model PersonalNotebook {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  contactUserId String // The userId (6-digit code) being saved
+  createdAt DateTime @default(now())
+
+  @@unique([userId, contactUserId])
+}
