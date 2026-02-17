@@ -48,13 +48,18 @@ export default function NewObservationPage({ params }: { params: { userId: strin
         body: formData,
       });
 
-      const data = await response.json();
+      let result;
+try {
+  result = await response.json();
+} catch {
+  throw new Error('Something went wrong. Please try again');
+}
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create observation');
-      }
+if (!response.ok) {
+  throw new Error(result.error || 'Failed to create observation');
+}
 
-      setSuccess(`Observation created successfully! ID: ${data.observationId}`);
+      setSuccess(`Observation created successfully! ID: ${result.observationId}`);
       setTimeout(() => {
         router.push(`/${params.userId}`);
       }, 2000);

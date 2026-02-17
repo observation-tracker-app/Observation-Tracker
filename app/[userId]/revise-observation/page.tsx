@@ -36,12 +36,16 @@ export default function ReviseObservationPage({ params }: { params: { userId: st
         body: data,
       });
 
-      const result = await response.json();
+      let result;
+try {
+  result = await response.json();
+} catch {
+  throw new Error('Something went wrong. Please try again');
+}
 
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to revise observation');
-      }
-
+if (!response.ok) {
+  throw new Error(result.error || 'Failed to revise observation');
+}
       setSuccess('Observation revised successfully!');
       setTimeout(() => router.push(`/${params.userId}/observations`), 2000);
     } catch (err: any) {
